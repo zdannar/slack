@@ -8,7 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/nlopes/slack"
+	"github.com/zdannar/slack"
 )
 
 func main() {

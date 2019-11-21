@@ -25,14 +25,23 @@ func (b Blocks) MarshalJSON() ([]byte, error) {
 // unmarshalling is delegated and proper type determination can be made before unmarshal
 func (b *Blocks) UnmarshalJSON(data []byte) error {
 	var raw []json.RawMessage
+	var rawS json.RawMessage
 
 	if string(data) == "{}" {
 		return nil
 	}
 
-	err := json.Unmarshal(data, &raw)
-	if err != nil {
-		return err
+	if data[0] == '{' {
+		err := json.Unmarshal(data, &rawS)
+		if err != nil {
+			return err
+		}
+		raw = append(raw, rawS)
+	} else {
+		err := json.Unmarshal(data, &raw)
+		if err != nil {
+			return err
+		}
 	}
 
 	var blocks Blocks
@@ -60,9 +69,6 @@ func (b *Blocks) UnmarshalJSON(data []byte) error {
 			block = &ImageBlock{}
 		case "section":
 			block = &SectionBlock{}
-		case "rich_text":
-			// for now ignore the (complex) content of rich_text blocks until we can fully support it
-			continue
 		default:
 			return errors.New("unsupported block type")
 		}
