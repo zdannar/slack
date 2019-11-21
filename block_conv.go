@@ -2,7 +2,7 @@ package slack
 
 import (
 	"encoding/json"
-
+	"fmt"
 	"github.com/pkg/errors"
 )
 
@@ -34,13 +34,13 @@ func (b *Blocks) UnmarshalJSON(data []byte) error {
 	if data[0] == '{' {
 		err := json.Unmarshal(data, &rawS)
 		if err != nil {
-			return err
+			return fmt.Errorf("Unable to deal with single : %s", err)
 		}
 		raw = append(raw, rawS)
 	} else {
 		err := json.Unmarshal(data, &raw)
 		if err != nil {
-			return err
+			return fmt.Errorf("Unable to deal with double : %s", err)
 		}
 	}
 
